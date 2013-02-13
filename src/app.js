@@ -1,66 +1,14 @@
-
-/**
- * Module dependencies.
- */
-
-var express = require('express')
-  , routes = require('./routes')
-  , appjs = require('appjs')
-  , utils = require('util');
-
-
-var app = module.exports = express.createServer();
-
-// Configuration
-
-app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'ejs');
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-app.use(express.compiler({ src : __dirname + '/public', enable: ['less']}));
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
-});
-
-app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-});
-
-app.configure('production', function(){
-  app.use(express.errorHandler());
-});
-
-// Compatible
-
-// Now less files with @import 'whatever.less' will work(https://github.com/senchalabs/connect/pull/174)
-var TWITTER_BOOTSTRAP_PATH = './vendor/twitter/bootstrap/less';
-express.compiler.compilers.less.compile = function(str, fn){
-  try {
-    var less = require('less');var parser = new less.Parser({paths: [TWITTER_BOOTSTRAP_PATH]});
-    parser.parse(str, function(err, root){fn(err, root.toCSS());});
-  } catch (err) {fn(err);}
-}
-
-// Routes
-
-app.get('/', routes.index);
-
-
 /**
  * Setup AppJS
  */
 
-// override AppJS's built in request handler with connect
-appjs.router.handle = app.handle.bind(app);
-
-// have express listen on a port:51686
-app.listen(51686);
+var app = module.exports = require('appjs')
+app.serveFilesFrom(__dirname + '/public');
 
 /**
  * Window options; menus, icons, etc.
  */
-var menubar = appjs.createMenu([{
+var menubar = app.createMenu([{
   label:'&File',
   submenu:[
     {
@@ -106,7 +54,7 @@ menubar.on('select',function(item){
   console.log("menu item "+item.label+" clicked");
 });
 
-var trayMenu = appjs.createMenu([{
+var trayMenu = app.createMenu([{
   label:'Show',
   action:function(){
     window.frame.show();
@@ -123,15 +71,13 @@ var trayMenu = appjs.createMenu([{
   }
 }]);
 
-var statusIcon = appjs.createStatusIcon({
+var statusIcon = app.createStatusIcon({
   icon:'./data/content/icons/32.png',
   tooltip:'AppJS Hello World',
   menu:trayMenu
 });
 
-// create window with url: http://localhost:51686/ instead of http://appjs/
-var window = appjs.createWindow('http://localhost:51686/',
- {
+var window = app.createWindow({
   width : 640,
   height: 460,
   icons : __dirname + '/public/icons'

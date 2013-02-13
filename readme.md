@@ -78,3 +78,11 @@ Yes, that can be disabled too.
 
 The application is 60mb+ in size, so it's not exactly the leanest...But also not the beefiest
 thing I've seen. Though it does come with that overhead before your application code and assets.
+
+## Dependencies
+
+* <http://appjs.org/>
+* <http://twitter.github.com/bootstrap/>
+* <http://jquery.com/>
+* <http://mstratman.github.com/cocoadialog/>
+
