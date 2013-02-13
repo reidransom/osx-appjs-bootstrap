@@ -51,4 +51,4 @@ Thumbs.db
 
 dist/*
 ignore/*
-get_it
+.get_it
