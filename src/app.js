@@ -92,9 +92,17 @@ window.on('create', function(){
 
 // add require/process/module to the window global object for debugging from the DevTools
 window.on('ready', function(){
-  window.require = require;
-  window.process = process;
-  window.module = module;
+  
+  window.N = {
+    require: require,
+    process: process,
+    module: module,
+    __dirname: __dirname,
+    // add node modules here:
+    fs: require("fs"),
+    path: require("path")
+  };
+  
   window.addEventListener('keydown', function(e){
     if (e.keyIdentifier === 'F12') {
       window.frame.openDevTools();
