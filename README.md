@@ -1,17 +1,15 @@
 # OS X AppJs Bootstrap
 =========================
 
-This is a boilerplate AppJS desktop application for OS X using Express, Twitter Bootstrap, and Font Awesome.
-Please keep in mind that this is a little subject to being dated with regard to keeping up with the latest
-versions of Express, Twitter Bootstrap, and Font Awesome...But that doesn't mean you couldn't update them
-yourself after cloning this and it also doesn't mean this doesn't serve as a good start for your project.
+This is a boilerplate AppJS desktop application for OS X 
 
 For more information about AppJs, see [AppJs.org](http://www.appjs.org)
 
 ## Quickstart
 
 You can clone this project and simply open your terminal and type in your terminal:
-```./bundle.sh -open```
+
+    ./bundle.sh --open
 
 That will bundle and launch the little default application for you, but you really won't see much.
 However, what you will be looking at is actually quite a robust application.
