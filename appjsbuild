@@ -121,6 +121,8 @@ if [ ${BUNDLE_NAME} ]; then
     defaults write "${TARDIR}/${APPNAME}.app/Contents/Info" CFBundleName "${BUNDLE_NAME}";
 fi;
 
+# Convert Info.plist to XML for hand-editing
+plutil -convert xml1 "${TARDIR}/${APPNAME}.app/Contents/Info.plist"
 
 # Optionally launch the application after packaging.
 if [ ${RUNIT} ]; then
