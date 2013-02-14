@@ -19,6 +19,8 @@ That will bundle and launch the little default application for you, but you real
 
 You'll want to go into the `src` directory and start building your application.  Checkout the `app.js` file first. In there you will see options to change file menus in your application among other things.
 
+Note:  The app name is hard-coded in the `app.js` file for now.  This could be retreived dynamically if you made sure the Info.plist was in plain xml and you read that file and used a regex to get the display name.
+
 You can install any node module you like with npm just like normal. Just make sure you are running that in the `src` directory.  When you're done, you can add installed node modules in the `app.js` file `modules` section to make them available throughout your app as `N.module_name` (ex. `N.fs` or `N.crypto`).
 
 You can change the default application icon by making your own .icns file and replacing `src/app.icns`.  Just a small note about the application icons...OS X will cache them. I tried to make the bundle script remove that cache best I could, but you may need to take other measures.

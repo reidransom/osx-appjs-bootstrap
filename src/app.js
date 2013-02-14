@@ -2,8 +2,48 @@
  * Setup AppJS
  */
 
-var app = module.exports = require('appjs')
+var app = module.exports = require('appjs'),
+  path = require('path'),
+  child_process = require('child_process'),
+  __appname = false,
+  __zoomed = false;
+
 app.serveFilesFrom(__dirname + '/public');
+
+var getAppName = function() {
+  
+  // todo: avoid hard-coding the app name here
+  __appname = "MyApp";
+  return __appname;
+  
+  if (__appname) {
+    // Return cached version
+    return __appname;
+  }
+  child_process.exec('defaults read "' + path.normalize(path.join(__dirname, "..", "Info")) + '" CFBundleDisplayName',
+    function(error, stdout, stderr) {
+      // Cache the app name
+      if (error) {
+        __appname = "node";
+      }
+      else {
+        __appname = stdout.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+      }
+      return __appname;
+    }
+  );
+}
+
+var zoomApp = function() {
+  if (__zoomed) {
+    window.frame.restore();
+    __zoomed = false;
+  }
+  else {
+    window.frame.maximize();
+    __zoomed = true;
+  }
+}
 
 /**
  * Window options; menus, icons, etc.
@@ -12,40 +52,48 @@ var menubar = app.createMenu([{
   label:'&File',
   submenu:[
     {
-      label:'E&xit',
+      label: 'About ' + getAppName(),
+      action: function() {
+        // todo: about
+      }
+    },
+    {
+      label: '' // separator
+    },
+    {
+      label: 'Hide ' + getAppName() + '\t\t   ⌘H',
+      action: function() {
+        // todo: hide
+      }
+    },
+    {
+      label: 'Hide Others\t\t⌥⌘H',
+      action: function() {
+        // todo: hide
+      }
+    },
+    {
+      label: '' // separator
+    },
+    {
+      label:'Quit ' + getAppName() + '\t\t   ⌘Q',
       action: function(){
         window.close();
       }
     }
   ]
 },{
-  label:'&Window',
+  label: '&Window',
   submenu:[
     {
-      label:'Fullscreen',
-      action:function(item) {
-        window.frame.fullscreen();
-        console.log(item.label+" called.");
-      }
-    },
-    {
-      label:'Minimize',
+      label: 'Minimize\t\t⌘M',
       action:function(){
         window.frame.minimize();
       }
     },
     {
-      label:'Maximize',
-      action:function(){
-        window.frame.maximize();
-      }
-    },{
-      label:''//separator
-    },{
-      label:'Restore',
-      action:function(){
-        window.frame.restore();
-      }
+      label: 'Zoom',
+      action: zoomApp
     }
   ]
 }]);
@@ -175,28 +223,14 @@ window.on('ready', function(){
     stdout: desc
   });
 
-  var __appname = false;
-  var getAppName = function() {
-    if (__appname) {
-      // Return cached version
-      return __appname;
+  var myappjs = {
+    hide: function() {
+
+    },
+    activate: function() {
+
     }
-    var info_plist_path = window.N.path.normalize(window.N.path.join(__dirname, "..", "Info"));
-    window.N.child_process.exec('defaults read "' + info_plist_path + '" CFBundleDisplayName',
-      function(error, stdout, stderr) {
-        // Cache the app name
-        if (error) {
-          __appname = "node";
-        }
-        else {
-          __appname = stdout.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-        }
-        return __appname;
-      }
-    );
   }
-  // Call this just so you have the appname is in the cache
-  getAppName();
 
   window.addEventListener('keyup', function(e) {
     if (e.keyIdentifier === 'Meta') {
@@ -258,6 +292,10 @@ window.on('ready', function(){
       else if (e.keyIdentifier === 'U+0057') {
         // Command+W
         window.close();
+      }
+      else if (e.keyIdentifier === 'U+004D') {
+        // Command+M
+        window.frame.minimize();
       }
       else if (e.keyIdentifier === 'U+0048') {
         // Command+H
@@ -353,7 +391,7 @@ window.on('ready', function(){
         shiftdown = true;
       }
       else {
-        console.log(e.keyIdentifier);
+        //console.log(e.keyIdentifier);
       }
     }
   });
