@@ -49,6 +49,9 @@ while [ "$1" != "" ]; do
             BUNDLE_IDENTIFIER=$VALUE
             BUNDLE_NAME=${BUNDLE_IDENTIFIER//./}
             ;;
+        --targetdir)
+            eval TARDIR=$VALUE
+            ;;
         -o | --open)
 			RUNIT=true
 			;;
@@ -90,7 +93,10 @@ fi;
 
 basedir="$( realpath_f `dirname ${0}` )";
 MACDIR="${basedir}";
-TARDIR="${MACDIR}/dist";
+
+if [[ -z ${TARDIR} ]]; then
+    TARDIR="${MACDIR}/dist";
+fi;
 
 # If we aren't forcing the build, stop if there's something that will be overwritten.
 if ! [ ${FORCE} ]; then
