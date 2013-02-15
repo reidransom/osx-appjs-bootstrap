@@ -16,8 +16,7 @@ function usage() {
     echo "  -h, --help      This screen"
     echo "  -f --force      Overwrites any existing application bundle"
     echo "  -o, --open      Runs the application immediately after build"
-    # TODO:
-    # echo "  -t --test       Tests the application before bundling it"
+    echo "  -t --test       Tests the application before bundling it"
     echo "  --name=         Your desired application file name (defaults to: MyApp)"
     echo "  --displayname=, --display-name=, --bundle-display-name="
     echo "                  Your desired application display name (defaults to file name)"
@@ -63,7 +62,6 @@ while [ "$1" != "" ]; do
             echo "ERROR: unknown parameter \"$PARAM\""
             echo "Try -h for help."
             echo ""
-            # usage
             exit 1
             ;;
     esac
