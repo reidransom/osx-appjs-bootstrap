@@ -4,6 +4,7 @@
 
 var app = module.exports = require('appjs'),
   path = require('path'),
+  fs = require('fs'),
   child_process = require('child_process'),
   __appname = false,
   __zoomed = false;
@@ -12,26 +13,20 @@ app.serveFilesFrom(__dirname + '/public');
 
 var getAppName = function() {
   
-  // todo: avoid hard-coding the app name here
-  __appname = "MyApp";
-  return __appname;
-  
   if (__appname) {
     // Return cached version
     return __appname;
   }
-  child_process.exec('defaults read "' + path.normalize(path.join(__dirname, "..", "Info")) + '" CFBundleDisplayName',
-    function(error, stdout, stderr) {
-      // Cache the app name
-      if (error) {
-        __appname = "node";
-      }
-      else {
-        __appname = stdout.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-      }
-      return __appname;
-    }
-  );
+  try {
+    // note: this depends on the Info.plist being xml instead of binary
+    // look at `man plutil` for conversion
+    var re = /<key>CFBundleDisplayName<\/key>\s*<string>(.+)<\/string>/;
+    __appname = re.exec(fs.readFileSync(path.join(__dirname, '..', 'Info.plist'), "utf8"))[1];
+  }
+  catch (e) {
+    __appname = 'node';
+  }
+  return __appname;
 }
 
 var zoomApp = function() {
