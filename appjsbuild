@@ -22,12 +22,14 @@ function usage() {
     echo "                  Your desired application display name (defaults to file name)"
     echo "  --bundle-identifier=, --identifier="
     echo "                  Optional bundle identifier (org.appjs.myapp by default)"
+    echo "  --targetdir=    Places your bundled application in the specified folder"
     echo ""
     echo "Example Usage:"
     echo "  ./bundle.sh                       Bundles MyApp.app in 'dist'"
     echo "  ./bundle.sh --open                Bundles the application then launches it"
     echo "  ./bundle.sh --name=HelloWorld     Will bundle a HelloWorld.app file in 'dist'"
     echo "  ./bundle.sh --name='App Name'     Will bundle an app with spaces in its name"
+    echo "  ./bundle.sh --targetdir=~/Desktop Will bundle an app and place it on the Desktop"
     echo ""
 }
 

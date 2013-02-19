@@ -1,43 +1,58 @@
-/**
- * Setup AppJS
- */
+"use strict";
+
+if (typeof Object.create !== 'function') {
+    Object.create = function (o) {
+        var F = function() {};
+        F.prototype = o;
+        return new F();
+    };
+}
 
 var app = module.exports = require('appjs'),
-  path = require('path'),
-  fs = require('fs'),
-  child_process = require('child_process'),
-  __appname = false,
-  __zoomed = false;
+    N = {
+        require: require,
+        process: process,
+        module: module,
+        // add node modules here:
+        fs: require('fs'),
+        path: require('path'),
+        child_process: require('child_process')
+    },
+    // app state
+    __dirname = __dirname,
+    __appname = false,
+    __zoomed = false;
 
 app.serveFilesFrom(__dirname + '/public');
 
 var getAppName = function() {
-  
-  if (__appname) {
-    // Return cached version
+    if (__appname) {
+        // Return cached version
+        return __appname;
+    }
+    try {
+        // note: this depends on the Info.plist being xml instead of binary
+        // look at `man plutil` for conversion
+        // Perhaps run the command version of this and then loop/wait until it's finished
+        var re = /<key>CFBundleDisplayName<\/key>\s*<string>(.+)<\/string>/;
+        __appname = re.exec(N.fs.readFileSync(N.path.join(__dirname, '..', 'Info.plist'), "utf8"))[1];
+    }
+    catch (e) {
+        console.log('Could not get real application name.');
+        __appname = 'node';
+    }
     return __appname;
-  }
-  try {
-    // note: this depends on the Info.plist being xml instead of binary
-    // look at `man plutil` for conversion
-    var re = /<key>CFBundleDisplayName<\/key>\s*<string>(.+)<\/string>/;
-    __appname = re.exec(fs.readFileSync(path.join(__dirname, '..', 'Info.plist'), "utf8"))[1];
-  }
-  catch (e) {
-    __appname = 'node';
-  }
-  return __appname;
 }
 
 var zoomApp = function() {
-  if (__zoomed) {
-    window.frame.restore();
-    __zoomed = false;
-  }
-  else {
-    window.frame.maximize();
-    __zoomed = true;
-  }
+    if (__zoomed) {
+        window.frame.restore();
+        __zoomed = false;
+    }
+    else {
+        window.frame.maximize();
+        __zoomed = true;
+    }
 }
 
 /**
@@ -137,31 +152,12 @@ window.on('create', function(){
 // add require/process/module to the window global object for debugging from the DevTools
 window.on('ready', function(){
   
+    var altdown = false,
+        metadown = false,
+        ctldown = false,
+        shiftdown = false;
 
-  var debuglog = function(msg) {
-    var launched_via_test = false;
-    if (launched_via_test) {
-      console.log(msg);
-    }
-    else {
-      //window.document.getElementsByTagName('body').innerHTML += '<pre>' + msg + '</pre>';
-    }
-  },
-    altdown = false,
-    metadown = false,
-    ctldown = false,
-    shiftdown = false;
-
-  window.N = {
-    require: require,
-    process: process,
-    module: module,
-    __dirname: __dirname,
-    // add node modules here:
-    fs: require('fs'),
-    path: require('path'),
-    child_process: require('child_process')
-  };
+  window.N = N;
 
   var Stream = require('stream');
 
@@ -243,7 +239,6 @@ window.on('ready', function(){
   });
 
   window.addEventListener('keydown', function(e){
-    console.log(e.keyIdentifier);
     if (altdown && ctldown && shiftdown) {
       // Shift+Control+Alt+Command
     }
@@ -260,8 +255,11 @@ window.on('ready', function(){
       // Alt+Command
       if (e.keyIdentifier === 'U+0048') {
         // Alt+Command+H
-        
-        window.N.child_process.exec("osascript -e 'tell application \"System Events\" to set visible of every process whose visible is true and name is not \"" + getAppName() + "\" to false'");
+        //console.log("alt,command,h");
+        //console.log("osascript -e 'tell application \"System Events\" to set visible of every process whose visible is true and name is not \"" + getAppName() + "\" to false'");
+        window.alert('one');
+        //window.N.child_process.exec("osascript -e 'tell application \"System Events\" to set visible of every process whose visible is true and name is not \"" + getAppName() + "\" to false'");
+        window.alert('two');
       }
       else if (e.keyIdentifier === 'U+004A') {
         // Alt+Command+J
@@ -294,16 +292,8 @@ window.on('ready', function(){
       }
       else if (e.keyIdentifier === 'U+0048') {
         // Command+H
-        var info_plist_path = window.N.path.normalize(window.N.path.join(__dirname, "..", "Info"));
-        window.N.child_process.exec('defaults read "' + info_plist_path + '" CFBundleDisplayName',
-          function(error, stdout, stderr) {
-            var app_name = "node";
-            if (! error) {
-              app_name = stdout.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-            }
-            window.N.child_process.exec("osascript -e 'tell application \"System Events\" to set visible of process \"" + getAppName() + "\" to false'");
-          }
-        );
+        console.log('hi there from command,h');
+        window.N.child_process.exec("osascript -e 'tell application \"System Events\" to set visible of process \"" + getAppName() + "\" to false'");
       }
       else if (e.keyIdentifier === 'U+0058') {
         // Command+X
