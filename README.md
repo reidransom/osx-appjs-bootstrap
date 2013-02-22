@@ -32,6 +32,7 @@ You can change the default application icon by making your own .icns file and re
 ## Dependencies
 
 * <http://appjs.org/>
+* <http://craig.is/killing/mice>
 
 ## Todo
 
