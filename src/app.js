@@ -18,8 +18,7 @@ var app = module.exports = require('appjs'),
         path: require('path'),
         child_process: require('child_process'),
         stream: require('stream')
-    },
-    __dirname = __dirname;
+    };
 
 app.serveFilesFrom(__dirname + '/public');
 
@@ -151,7 +150,7 @@ var OSXify = {
             configurable: true,
             enumerable: true,
             get: function() {
-                return consoleStream
+                return consoleStream;
             }
         };
 
@@ -174,7 +173,8 @@ var OSXify = {
         "&":"7","*":"8","(":"9",")":"0",_:"-","+":"=",":":";",'"':"'","<":",",">":".","?":"/","|":"\\"},E={option:"alt",command:"meta","return":"enter",escape:"esc"},q,l={},r={},m={},D,x=!1,p=!1,g=1;20>g;++g)h[111+g]="f"+g;for(g=0;9>=g;++g)h[g+96]=g;s(document,"keypress",w);s(document,"keydown",w);s(document,"keyup",w);var k={bind:function(a,c,b){a=a instanceof Array?a:[a];for(var d=0;d<a.length;++d)C(a[d],c,b);return this},unbind:function(a,c){return k.bind(a,function(){},c)},trigger:function(a,c){if(r[a+
         ":"+c])r[a+":"+c]();return this},reset:function(){l={};r={};return this},stopCallback:function(a,c){return-1<(" "+c.className+" ").indexOf(" mousetrap ")?!1:"INPUT"==c.tagName||"SELECT"==c.tagName||"TEXTAREA"==c.tagName||c.contentEditable&&"true"==c.contentEditable}};window.Mousetrap=k;"function"===typeof define&&define.amd&&define(k)})();
         // end mousetrap
-        window.Mousetrap.stopCallback = function(e, element, combo) {
+        //window.Mousetrap.stopCallback = function(e, element, combo) {
+        window.Mousetrap.stopCallback = function() {
             return false;
         };
         return;
@@ -303,7 +303,7 @@ var menubar = app.createMenu([
                 action: function() {
                     osxapp.selectAll();
                 }
-            },
+            }
 
         ]
     },
