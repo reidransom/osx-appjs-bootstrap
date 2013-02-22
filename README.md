@@ -44,3 +44,8 @@ AppJS is pretty cool. It works by using Chromium and a 32-bit (currently) versio
 * <http://appjs.org/>
 * <http://mstratman.github.com/cocoadialog/>
 
+## Todo
+
+* Edit menu with Undo/Redo
+* open file dialog <http://stackoverflow.com/questions/14597196/appjs-opendialog-return-value-is-garbled>
+    * keep and eye on <https://github.com/appjs/appjs/issues/316>

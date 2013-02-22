@@ -19,10 +19,7 @@ var app = module.exports = require('appjs'),
         child_process: require('child_process'),
         stream: require('stream')
     },
-    // app state
-    __dirname = __dirname,
-    __appname = false,
-    __zoomed = false;
+    __dirname = __dirname;
 
 app.serveFilesFrom(__dirname + '/public');
 
@@ -31,6 +28,7 @@ var OSXify = {
         var obj = Object.create(this);
         obj.app = appjs_app;
         obj._appname = false;
+        obj._zoomed = false;
         return obj;
     },
     getName:  function() {
@@ -50,14 +48,18 @@ var OSXify = {
         }
         return this._appname;
     },
+    debug: function() {
+        // let's just lazily assume your app isn't actually going to be called "node"
+        return (this.getName() === 'node');
+    },
     zoom: function() {
-        if (__zoomed) {
+        if (this._zoomed) {
             window.frame.restore();
-            __zoomed = false;
+            this._zoomed = false;
         }
         else {
             window.frame.maximize();
-            __zoomed = true;
+            this._zoomed = true;
         }
     },
     openDevTools: function() {
@@ -244,7 +246,7 @@ var menubar = app.createMenu([
                 }
             },
             {
-                label: 'Hide Others\t\t⇧⌥⌘H',
+                label: 'Hide Others\t\t⌥⌘H',
                 action: function() {
                     osxapp.hideOthers();
                 }
@@ -258,6 +260,51 @@ var menubar = app.createMenu([
                     window.close();
                 }
             }
+        ]
+    },
+    {
+        label: '&Edit',
+        submenu: [
+            {
+                label: 'Undo\t\t\t\t\t⌘Z',
+                action: function() {
+                    osxapp.undo();
+                }
+            },
+            {
+                label: 'Redo\t\t\t\t\t⇧⌘Z',
+                action: function() {
+                    osxapp.redo();
+                }
+            },
+            {
+                label: '' // separator
+            },
+            {
+                label: 'Cut\t\t\t\t\t\t⌘X',
+                action: function() {
+                    osxapp.cut();
+                }
+            },
+            {
+                label: 'Copy\t\t\t\t\t⌘C',
+                action: function() {
+                    osxapp.copy();
+                }
+            },
+            {
+                label: 'Paste\t\t\t\t\t⌘V',
+                action: function() {
+                    osxapp.paste();
+                }
+            },
+            {
+                label: 'Select All\t\t\t\t⌘A',
+                action: function() {
+                    osxapp.selectAll();
+                }
+            },
+
         ]
     },
     {
@@ -290,13 +337,15 @@ window.on('create', function() {
     window.frame.setMenuBar(menubar);
 });
 
-// add require/process/module to the window global object for debugging from the DevTools
 window.on('ready', function(){
-  
+    console.log('Window Ready');
+    // add require/process/module to the window global object
     window.N = N;
-    osxapp.sendNodeConsoleToChromeConsole();
+    if (! osxapp.debug()) {
+        // only send node console to chrome console if the being run from an app bundle.
+        osxapp.sendNodeConsoleToChromeConsole();
+    }
     osxapp.defineShortcutKeys();
-
 });
 
 window.on('close', function() {

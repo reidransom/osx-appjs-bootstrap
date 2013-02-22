@@ -1,0 +1,2 @@
+#!/bin/sh
+./appjsbuild --test --targetdir=~/Desktop --force --name=TestApp
